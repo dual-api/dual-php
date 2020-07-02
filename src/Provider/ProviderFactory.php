@@ -1,7 +1,7 @@
 <?php
 namespace Dual;
 
-class Provider {
+class ProviderFactory {
 
     private $providers = [
         'apache'    => '\Dual\Provider\Apache',
@@ -14,9 +14,9 @@ class Provider {
         $this->event    = $event;
     }
 
-    public function getController() {
-        $endpoint_class = $this->$providers[$this->configs['provider']];
-        return new $endpoint_class($this->configs, $this->event);
+    public function getProvider() {
+        $provider = $this->$providers[$this->configs['provider']];
+        return new $provider($this->configs, $this->event);
     }
 
 }

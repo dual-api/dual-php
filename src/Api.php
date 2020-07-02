@@ -11,11 +11,11 @@ final class Api {
     }
 
     public function run(array $event = []) {
-        $Provider   = new \Dual\Provider($this->configs, $event);
-        $Controller = $Provider->getController();
-        $Router     = new \Dual\Router($Controller);
+        $Factory    = new \Dual\ProviderFactory($this->configs, $event);
+        $Provider   = $Factory->getProvider();
+        $Router     = new \Dual\Router($Provider);
         $Response   = $Router->route();
-        return $Response->respond();
+        $Response->respond();
     }
 
     private function __checkConfigs() {

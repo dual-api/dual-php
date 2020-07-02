@@ -3,6 +3,16 @@ namespace Dual\Provider\Apache;
 
 class Request {
 
+    private $environment = null;
+
+    public function __construct($environment) {
+        $this->environment = $environment;
+    }
+
+    public function environment() {
+        return $this->environment;
+    }
+
     public function headers() {
         return getallheaders();
     }

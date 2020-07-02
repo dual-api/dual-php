@@ -15,6 +15,16 @@ abstract class Controller {
         $Response->setBody(null);
     }
 
+    public function beforeRoute(\Dual\Provider\Apache\Request $Request, \Dual\Provider\Apache\Response &$Response) {
+        // do something
+        $this->__evaluatePass($pass, 'before');
+    }
+
+    public function afterRoute(\Dual\Provider\Apache\Request $Request, \Dual\Provider\Apache\Response &$Response) {
+        // do something
+        $this->__evaluatePass($pass, 'before');
+    }
+
     public function addBeforeMiddleware($funcs) {
         $this->beforeMiddleware[] = $funcs;
     }
@@ -23,11 +33,7 @@ abstract class Controller {
         $this->afterMiddleware[] = $funcs;
     }
 
-    public function before() {
-        // do something
-    }
-
-    public function after() {
-        // do something
+    private function __evaluatePass(bool $pass, string $route) {
+        if (!$pass) throw new Exception("error triggered during: {$route}; check logs and/or api response");
     }
 }

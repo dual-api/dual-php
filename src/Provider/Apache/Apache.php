@@ -6,39 +6,49 @@ class Apache extends \Dual\Provider\Template {
     private $controller_namespace   = null;
     private $cors                   = null;
     private $base_url               = null;
-    private static $endpoint_class  = null;
-    private static $endpoint_method = null;
-    private static $debug_mode      = false;
+    private $debug_mode             = false;
 
     public function __construct(array $configs) {
         $this->controller_namespace = $configs['controller_namespace'];
         $this->cors                 = $configs['cors'];
         $this->base_url             = $configs['base_url'];
+        $this->debug_mode           = $configs['debug_mode'];
+        $this->environment          = $configs['environment'];
         $this->controller           = $this->__getControllerClass();
         $this->method               = $this->__getControllerMethod();
-        self::$endpoint_class       = $this->controller;
-        self::$endpoint_method      = $this->method;
-        self::$debug_mode           = $configs['debug_mode'];
     }
 
-    public static function classExists() {
-        return class_exists(self::$endpoint_class);
+    public function controllerExists() {
+        return class_exists($this->controller);
     }
 
-    public static function methodExists() {
-        return method_exists(self::$endpoint_class, self::$endpoint_method);
+    public function methodExists() {
+        return method_exists($this->controller, $this->method);
     }
 
-    public static function logDebug($error_message) {
-        if (self::$debug_mode) error_log($error_message, 0);
+    public function logDebug($error_message) {
+        if ($this->$debug_mode) {
+            ob_start();
+            error_log($error_message, 0);
+            debug_print_backtrace();
+            error_log(ob_get_clean());
+        }
     }
 
-    public function getRequestClass() {
-        $Request = new \Dual\Provider\Apache\Request();
+    public function getController() {
+        return new $this->controller();
+    }
+
+    public function getMethod() {
+        return $this->method;
+    }
+
+    public function getRequest() {
+        $Request = new \Dual\Provider\Apache\Request($this->environment);
         return $Request;
     }
 
-    public function getResponseClass() {
+    public function getResponse() {
         $Response = new \Dual\Provider\Apache\Response();
         if ($this->cors) $Response->setCors($this->base_url);
         return $Response;
