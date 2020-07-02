@@ -1,2 +1,2 @@
-language = "php_webserver"
+language = "php_cli"
 run = ""
